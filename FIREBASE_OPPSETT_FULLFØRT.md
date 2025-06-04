@@ -13,17 +13,19 @@ Firebase er nå fullstendig satt opp for DGM Logistikk-prosjektet!
 ### 2. Firebase-prosjekt ✅
 - **Prosjekt ID**: `dgm-logistikk`
 - **Prosjekt navn**: DGM Logistikk
-- **Web App ID**: `1:347541595840:web:0e64debf6a3aa91fafef25`
+- **Web App ID**: `your-web-app-id`
 
 ### 3. Miljøvariabler (.env) ✅
 ```env
-VITE_FIREBASE_API_KEY=AIzaSyBZlXk95_L_kMqu0rIycHLM8XIOsL0XDb4
-VITE_FIREBASE_AUTH_DOMAIN=dgm-logistikk.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=dgm-logistikk
-VITE_FIREBASE_STORAGE_BUCKET=dgm-logistikk.firebasestorage.app
-VITE_FIREBASE_MESSAGING_SENDER_ID=347541595840
-VITE_FIREBASE_APP_ID=1:347541595840:web:0e64debf6a3aa91fafef25
+VITE_FIREBASE_API_KEY=your-api-key-here
+VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your-project-id
+VITE_FIREBASE_STORAGE_BUCKET=your-project.firebasestorage.app
+VITE_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
+VITE_FIREBASE_APP_ID=your-app-id
 ```
+
+**⚠️ SECURITY NOTE:** Real configuration values are stored securely in environment variables and not committed to the repository.
 
 ### 4. Firebase-tjenester ✅
 
