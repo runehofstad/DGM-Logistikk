@@ -2,8 +2,9 @@ import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { useRole } from '@/hooks/useRole';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Truck, User, LogOut, Shield } from 'lucide-react';
+import { Menu, X, User, LogOut, Shield } from 'lucide-react';
 import { useState } from 'react';
+import dgmLogo from '@/assets/DGM_logo.png';
 
 export function Layout() {
   const { currentUser, logout } = useAuth();
@@ -22,9 +23,8 @@ export function Layout() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <Link to="/" className="flex items-center space-x-2">
-                <Truck className="h-8 w-8 text-primary" />
-                <span className="font-bold text-xl">DGM Logistikk</span>
+              <Link to="/" className="flex items-center">
+                <img src={dgmLogo} alt="DGM Logistikk" className="h-10 w-auto" />
               </Link>
             </div>
 
@@ -36,9 +36,14 @@ export function Layout() {
                     <Button variant="ghost">Forespørsler</Button>
                   </Link>
                   {role === 'buyer' && (
-                    <Link to="/ny-forespørsel">
-                      <Button variant="ghost">Ny forespørsel</Button>
-                    </Link>
+                    <>
+                      <Link to="/ny-forespørsel">
+                        <Button variant="ghost">Ny forespørsel</Button>
+                      </Link>
+                      <Link to="/mine-foresporsler">
+                        <Button variant="ghost">Mine forespørsler</Button>
+                      </Link>
+                    </>
                   )}
                   <Link to="/firma">
                     <Button variant="ghost">Mitt firma</Button>
@@ -96,11 +101,18 @@ export function Layout() {
                     </Button>
                   </Link>
                   {role === 'buyer' && (
-                    <Link to="/ny-forespørsel" className="block">
-                      <Button variant="ghost" className="w-full justify-start">
-                        Ny forespørsel
-                      </Button>
-                    </Link>
+                    <>
+                      <Link to="/ny-forespørsel" className="block">
+                        <Button variant="ghost" className="w-full justify-start">
+                          Ny forespørsel
+                        </Button>
+                      </Link>
+                      <Link to="/mine-foresporsler" className="block">
+                        <Button variant="ghost" className="w-full justify-start">
+                          Mine forespørsler
+                        </Button>
+                      </Link>
+                    </>
                   )}
                   <Link to="/firma" className="block">
                     <Button variant="ghost" className="w-full justify-start">

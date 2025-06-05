@@ -14,29 +14,55 @@ export function CompanyPage() {
   const [company, setCompany] = useState<Company | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [shouldReload, setShouldReload] = useState(0);
 
   useEffect(() => {
-    if (userData?.companyId) {
-      loadCompany();
-    } else {
-      setLoading(false);
-    }
-  }, [userData]);
-
-  const loadCompany = async () => {
-    if (!userData?.companyId) return;
-
-    try {
-      const companyDoc = await getDoc(doc(db, 'companies', userData.companyId));
-      if (companyDoc.exists()) {
-        setCompany({ id: companyDoc.id, ...companyDoc.data() } as Company);
+    const loadCompanyData = async () => {
+      if (!currentUser) {
+        setLoading(false);
+        return;
       }
-    } catch (error) {
-      console.error('Error loading company:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+
+      try {
+        // First try to load by companyId
+        if (userData?.companyId) {
+          const companyDoc = await getDoc(doc(db, 'companies', userData.companyId));
+          if (companyDoc.exists()) {
+            setCompany({ id: companyDoc.id, ...companyDoc.data() } as Company);
+            setLoading(false);
+            return;
+          }
+        }
+
+        // If no companyId or company not found, try to find company created by user
+        const { query, where, getDocs, collection: firestoreCollection } = await import('firebase/firestore');
+        const companiesQuery = query(
+          firestoreCollection(db, 'companies'),
+          where('createdBy', '==', currentUser.uid)
+        );
+        const querySnapshot = await getDocs(companiesQuery);
+        
+        if (!querySnapshot.empty) {
+          const companyDoc = querySnapshot.docs[0];
+          setCompany({ id: companyDoc.id, ...companyDoc.data() } as Company);
+          
+          // Update user's companyId if not set
+          if (!userData?.companyId) {
+            await updateDoc(doc(db, 'users', currentUser.uid), {
+              companyId: companyDoc.id,
+              updatedAt: serverTimestamp()
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error loading company:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadCompanyData();
+  }, [userData, currentUser, shouldReload]);
 
   const handleSubmit = async (data: Omit<Company, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'approved'>) => {
     if (!currentUser) return;
@@ -77,7 +103,7 @@ export function CompanyPage() {
         });
       }
       
-      await loadCompany();
+      setShouldReload(prev => prev + 1);
     } catch (error: any) {
       toast({
         title: "Feil ved lagring",

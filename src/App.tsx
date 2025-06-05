@@ -10,6 +10,8 @@ import { Login } from '@/pages/Login';
 import { Register } from '@/pages/Register';
 import { Requests } from '@/pages/Requests';
 import { NewRequest } from '@/pages/NewRequest';
+import { MyRequests } from '@/pages/MyRequests';
+import { RequestDetails } from '@/pages/RequestDetails';
 import { CompanyPage } from '@/pages/Company';
 import { Profile } from '@/pages/Profile';
 import { Admin } from '@/pages/Admin';
@@ -25,6 +27,7 @@ function App() {
             <Route path="logg-inn" element={<Login />} />
             <Route path="registrer" element={<Register />} />
             <Route path="foresporsler" element={<Requests />} />
+            <Route path="foresporsler/:id" element={<RequestDetails />} />
             <Route path="ikke-autorisert" element={<Unauthorized />} />
             
             {/* Protected routes */}
@@ -33,6 +36,14 @@ function App() {
               element={
                 <AuthGuard allowedRoles={['buyer']}>
                   <NewRequest />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="mine-foresporsler"
+              element={
+                <AuthGuard allowedRoles={['buyer']}>
+                  <MyRequests />
                 </AuthGuard>
               }
             />

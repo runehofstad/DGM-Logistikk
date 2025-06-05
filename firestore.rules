@@ -9,12 +9,15 @@ service cloud.firestore {
 
     match /companies/{companyId} {
       allow read: if true;
-      allow create, update: if request.auth != null && isCompanyMember(companyId);
+      allow create: if request.auth != null;
+      allow update: if request.auth != null && (isCompanyMember(companyId) || isCompanyCreator(companyId) || hasRole("superadmin"));
+      allow delete: if request.auth != null && hasRole("superadmin");
     }
 
     match /requests/{requestId} {
       allow read: if true;
-      allow create, update, delete: if isRequestOwner();
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+      allow update, delete: if isRequestOwner() || hasRole("superadmin");
     }
 
     match /admin/{docId} {
@@ -32,6 +35,10 @@ service cloud.firestore {
 
     function isCompanyMember(companyId) {
       return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.companyId == companyId;
+    }
+
+    function isCompanyCreator(companyId) {
+      return resource.data.createdBy == request.auth.uid;
     }
   }
 }

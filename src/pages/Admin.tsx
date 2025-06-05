@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, query, where, orderBy, onSnapshot, updateDoc, doc, deleteDoc } from 'firebase/firestore';
+import { collection, query, where, orderBy, onSnapshot, updateDoc, doc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -78,17 +78,18 @@ export function Admin() {
     try {
       await updateDoc(doc(db, 'companies', companyId), {
         approved: true,
-        updatedAt: new Date()
+        updatedAt: serverTimestamp()
       });
       
       toast({
         title: "Firma godkjent",
         description: "Firmaet har blitt godkjent og kan nå bruke plattformen.",
       });
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Error approving company:', error);
       toast({
         title: "Feil",
-        description: "Kunne ikke godkjenne firma. Prøv igjen.",
+        description: error.message || "Kunne ikke godkjenne firma. Prøv igjen.",
         variant: "destructive",
       });
     }

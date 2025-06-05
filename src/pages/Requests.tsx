@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { collection, query, where, orderBy, onSnapshot, doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
-import { ForespørselKort } from '@/components/ForespørselKort';
+import { ForespørselList } from '@/components/ForespørselList';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -144,9 +144,12 @@ export function Requests() {
           </p>
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="space-y-3">
+          <p className="text-sm text-muted-foreground mb-4">
+            {filteredRequests.length} forespørsler funnet
+          </p>
           {filteredRequests.map(request => (
-            <ForespørselKort
+            <ForespørselList
               key={request.id}
               request={request}
               companyName={companies[request.companyId]?.name}

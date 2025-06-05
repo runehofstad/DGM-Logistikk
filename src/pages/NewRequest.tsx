@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -9,12 +9,15 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
+import { AddressAutocomplete } from '@/components/AddressAutocomplete';
+import type { Company } from '@/types';
 
 export function NewRequest() {
   const { currentUser, userData } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [company, setCompany] = useState<Company | null>(null);
   const [formData, setFormData] = useState({
     cargoType: '',
     weight: '',
@@ -23,6 +26,38 @@ export function NewRequest() {
     deliveryLocation: '',
     specialNeeds: ''
   });
+
+  useEffect(() => {
+    const loadCompany = async () => {
+      if (!userData?.companyId) {
+        setCompany(null);
+        return;
+      }
+      
+      try {
+        const companyDoc = await getDoc(doc(db, 'companies', userData.companyId));
+        if (companyDoc.exists()) {
+          setCompany({ id: companyDoc.id, ...companyDoc.data() } as Company);
+        } else {
+          // Company was deleted, clear the companyId from user
+          setCompany(null);
+          if (currentUser) {
+            await updateDoc(doc(db, 'users', currentUser.uid), {
+              companyId: null,
+              updatedAt: serverTimestamp()
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error loading company:', error);
+        setCompany(null);
+      }
+    };
+
+    if (userData?.companyId) {
+      loadCompany();
+    }
+  }, [userData, currentUser]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,19 +72,46 @@ export function NewRequest() {
       return;
     }
 
+    if (!company?.approved) {
+      toast({
+        title: "Firma ikke godkjent",
+        description: "Ditt firma må godkjennes av administrator før du kan opprette forespørsler.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate form data
+    if (!formData.cargoType || !formData.weight || !formData.numberOfItems || 
+        !formData.pickupLocation || !formData.deliveryLocation) {
+      toast({
+        title: "Mangler påkrevde felt",
+        description: "Vennligst fyll ut alle påkrevde felt.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
-      await addDoc(collection(db, 'requests'), {
-        ...formData,
+      const requestData = {
+        cargoType: formData.cargoType,
         weight: parseFloat(formData.weight),
         numberOfItems: parseInt(formData.numberOfItems),
+        pickupLocation: formData.pickupLocation,
+        deliveryLocation: formData.deliveryLocation,
+        specialNeeds: formData.specialNeeds || '',
         companyId: userData.companyId,
         userId: currentUser.uid,
         status: 'active',
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp()
-      });
+      };
+
+      console.log('Submitting request:', requestData);
+      
+      await addDoc(collection(db, 'requests'), requestData);
 
       toast({
         title: "Forespørsel opprettet",
@@ -58,6 +120,7 @@ export function NewRequest() {
       
       navigate('/foresporsler');
     } catch (error: any) {
+      console.error('Error creating request:', error);
       toast({
         title: "Feil ved opprettelse",
         description: error.message || "Noe gikk galt. Prøv igjen.",
@@ -70,6 +133,17 @@ export function NewRequest() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
+      {company && !company.approved && (
+        <Card className="mb-6 border-yellow-200 bg-yellow-50">
+          <CardHeader>
+            <CardTitle className="text-yellow-800">Firma venter på godkjenning</CardTitle>
+            <CardDescription className="text-yellow-700">
+              Ditt firma må godkjennes av administrator før du kan opprette forespørsler.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      )}
+      
       <Card>
         <CardHeader>
           <CardTitle>Ny fraktforespørsel</CardTitle>
@@ -98,6 +172,8 @@ export function NewRequest() {
                   id="weight"
                   type="number"
                   placeholder="1000"
+                  min="0.1"
+                  step="0.1"
                   value={formData.weight}
                   onChange={(e) => setFormData({...formData, weight: e.target.value})}
                   required
@@ -110,6 +186,8 @@ export function NewRequest() {
                   id="numberOfItems"
                   type="number"
                   placeholder="10"
+                  min="1"
+                  step="1"
                   value={formData.numberOfItems}
                   onChange={(e) => setFormData({...formData, numberOfItems: e.target.value})}
                   required
@@ -119,24 +197,22 @@ export function NewRequest() {
 
             <div className="space-y-2">
               <Label htmlFor="pickupLocation">Henteadresse</Label>
-              <Input
+              <AddressAutocomplete
                 id="pickupLocation"
-                type="text"
                 placeholder="Gateadresse, Postnummer Sted"
                 value={formData.pickupLocation}
-                onChange={(e) => setFormData({...formData, pickupLocation: e.target.value})}
+                onChange={(value) => setFormData({...formData, pickupLocation: value})}
                 required
               />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="deliveryLocation">Leveringsadresse</Label>
-              <Input
+              <AddressAutocomplete
                 id="deliveryLocation"
-                type="text"
                 placeholder="Gateadresse, Postnummer Sted"
                 value={formData.deliveryLocation}
-                onChange={(e) => setFormData({...formData, deliveryLocation: e.target.value})}
+                onChange={(value) => setFormData({...formData, deliveryLocation: value})}
                 required
               />
             </div>
