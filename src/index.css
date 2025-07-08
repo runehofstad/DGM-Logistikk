@@ -10,7 +10,7 @@
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 102 47% 49%; /* #64B13F - Green */
+    --primary: 250 33% 52%; /* #6C5EAF - Purple */
     --primary-foreground: 0 0% 100%;
     --secondary: 37 93% 46%; /* #DF8E07 - Orange */
     --secondary-foreground: 0 0% 100%;
@@ -22,7 +22,7 @@
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 102 47% 49%; /* Primary color for focus rings */
+    --ring: 250 33% 52%; /* Primary color for focus rings */
     --radius: 0.5rem;
   }
 
@@ -33,7 +33,7 @@
     --card-foreground: 210 40% 98%;
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    --primary: 102 47% 49%; /* #64B13F - Green */
+    --primary: 250 33% 52%; /* #6C5EAF - Purple */
     --primary-foreground: 0 0% 100%;
     --secondary: 37 93% 46%; /* #DF8E07 - Orange */
     --secondary-foreground: 0 0% 100%;
@@ -45,7 +45,7 @@
     --destructive-foreground: 210 40% 98%;
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 102 47% 59%; /* Lighter green for dark mode */
+    --ring: 250 33% 62%; /* Lighter purple for dark mode */
   }
 }
 

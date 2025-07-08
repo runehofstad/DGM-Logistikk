@@ -19,7 +19,7 @@ export function Layout() {
 
   return (
     <div className="min-h-screen bg-background">
-      <nav className="bg-card shadow-sm border-b">
+      <nav className="shadow-sm border-b" style={{ backgroundColor: '#220C4D' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
@@ -33,44 +33,44 @@ export function Layout() {
               {currentUser ? (
                 <>
                   <Link to="/foresporsler">
-                    <Button variant="ghost">Forespørsler</Button>
+                    <Button variant="ghost" className="text-white hover:bg-white/10 hover:text-white">Forespørsler</Button>
                   </Link>
                   {role === 'buyer' && (
                     <>
                       <Link to="/ny-forespørsel">
-                        <Button variant="ghost">Ny forespørsel</Button>
+                        <Button variant="ghost" className="text-white hover:bg-white/10 hover:text-white">Ny forespørsel</Button>
                       </Link>
                       <Link to="/mine-foresporsler">
-                        <Button variant="ghost">Mine forespørsler</Button>
+                        <Button variant="ghost" className="text-white hover:bg-white/10 hover:text-white">Mine forespørsler</Button>
                       </Link>
                     </>
                   )}
                   <Link to="/firma">
-                    <Button variant="ghost">Mitt firma</Button>
+                    <Button variant="ghost" className="text-white hover:bg-white/10 hover:text-white">Mitt firma</Button>
                   </Link>
                   <Link to="/profil">
-                    <Button variant="ghost" size="icon">
-                      <User className="h-5 w-5" />
+                    <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 hover:text-white">
+                      <User className="h-5 w-5 text-white" />
                     </Button>
                   </Link>
                   {role === 'superadmin' && (
                     <Link to="/admin">
-                      <Button variant="ghost" size="icon">
-                        <Shield className="h-5 w-5" />
+                      <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 hover:text-white">
+                        <Shield className="h-5 w-5 text-white" />
                       </Button>
                     </Link>
                   )}
-                  <Button variant="outline" size="icon" onClick={handleLogout}>
-                    <LogOut className="h-5 w-5" />
+                  <Button variant="ghost" size="icon" onClick={handleLogout} className="text-white hover:bg-white/10 hover:text-white">
+                    <LogOut className="h-5 w-5 text-white" />
                   </Button>
                 </>
               ) : (
                 <>
                   <Link to="/logg-inn">
-                    <Button variant="ghost">Logg inn</Button>
+                    <Button variant="ghost" className="text-white hover:bg-white/10 hover:text-white">Logg inn</Button>
                   </Link>
                   <Link to="/registrer">
-                    <Button>Registrer deg</Button>
+                    <Button className="bg-white text-primary hover:bg-white/90">Registrer deg</Button>
                   </Link>
                 </>
               )}
@@ -82,8 +82,9 @@ export function Layout() {
                 variant="ghost"
                 size="icon"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="text-white hover:bg-white/10 hover:text-white"
               >
-                {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                {mobileMenuOpen ? <X className="h-6 w-6 text-white" /> : <Menu className="h-6 w-6 text-white" />}
               </Button>
             </div>
           </div>
@@ -91,49 +92,49 @@ export function Layout() {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden">
+          <div className="md:hidden" style={{ backgroundColor: '#220C4D' }}>
             <div className="px-2 pt-2 pb-3 space-y-1">
               {currentUser ? (
                 <>
                   <Link to="/foresporsler" className="block">
-                    <Button variant="ghost" className="w-full justify-start">
+                    <Button variant="ghost" className="w-full justify-start text-white hover:bg-white/10 hover:text-white">
                       Forespørsler
                     </Button>
                   </Link>
                   {role === 'buyer' && (
                     <>
                       <Link to="/ny-forespørsel" className="block">
-                        <Button variant="ghost" className="w-full justify-start">
+                        <Button variant="ghost" className="w-full justify-start text-white hover:bg-white/10 hover:text-white">
                           Ny forespørsel
                         </Button>
                       </Link>
                       <Link to="/mine-foresporsler" className="block">
-                        <Button variant="ghost" className="w-full justify-start">
+                        <Button variant="ghost" className="w-full justify-start text-white hover:bg-white/10 hover:text-white">
                           Mine forespørsler
                         </Button>
                       </Link>
                     </>
                   )}
                   <Link to="/firma" className="block">
-                    <Button variant="ghost" className="w-full justify-start">
+                    <Button variant="ghost" className="w-full justify-start text-white hover:bg-white/10 hover:text-white">
                       Mitt firma
                     </Button>
                   </Link>
                   <Link to="/profil" className="block">
-                    <Button variant="ghost" className="w-full justify-start">
+                    <Button variant="ghost" className="w-full justify-start text-white hover:bg-white/10 hover:text-white">
                       Min profil
                     </Button>
                   </Link>
                   {role === 'superadmin' && (
                     <Link to="/admin" className="block">
-                      <Button variant="ghost" className="w-full justify-start">
+                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-white/10 hover:text-white">
                         Admin
                       </Button>
                     </Link>
                   )}
                   <Button 
-                    variant="outline" 
-                    className="w-full justify-start" 
+                    variant="ghost" 
+                    className="w-full justify-start text-white hover:bg-white/10 hover:text-white" 
                     onClick={handleLogout}
                   >
                     Logg ut
@@ -142,12 +143,12 @@ export function Layout() {
               ) : (
                 <>
                   <Link to="/logg-inn" className="block">
-                    <Button variant="ghost" className="w-full justify-start">
+                    <Button variant="ghost" className="w-full justify-start text-white hover:bg-white/10 hover:text-white">
                       Logg inn
                     </Button>
                   </Link>
                   <Link to="/registrer" className="block">
-                    <Button className="w-full justify-start">
+                    <Button className="w-full justify-start bg-white text-primary hover:bg-white/90">
                       Registrer deg
                     </Button>
                   </Link>
